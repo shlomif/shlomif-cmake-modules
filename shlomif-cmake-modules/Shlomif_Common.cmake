@@ -308,6 +308,21 @@ MACRO(ADD_GCC_DEBUG_WARNING_FLAGS)
         )
 ENDMACRO(ADD_GCC_DEBUG_WARNING_FLAGS)
 
+MACRO(SHLOMIF_PHYS_COPY_FILE FROM TO)
+    FILE (READ "${FROM}" contents)
+    FILE (WRITE "${TO}" "${contents}")
+ENDMACRO(SHLOMIF_PHYS_COPY_FILE FROM TO)
+
+MACRO(SHLOMIF_COMMON_SETUP private_mod_path)
+    SET (private_mod "Shlomif_Common.cmake")
+    IF (NOT EXISTS "${private_mod_path}/${private_mod}")
+        SHLOMIF_PHYS_COPY_FILE(
+            "/usr/share/cmake/Modules/${private_mod}"
+            "${private_mod_path}/${private_mod}"
+            )
+    ENDIF (NOT EXISTS "${private_mod_path}/${private_mod}")
+ENDMACRO(SHLOMIF_COMMON_SETUP private_mod_path)
+
 # Configure paths.
 SET (DATADIR "${CMAKE_INSTALL_PREFIX}/share"
     CACHE PATH "The data dir"
