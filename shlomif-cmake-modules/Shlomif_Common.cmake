@@ -91,10 +91,8 @@ MACRO(PREPROCESS_PATH_PERL_WITH_FULL_NAMES TARGET_NAME SOURCE DEST)
     )
 ENDMACRO()
 
-MACRO(PREPROCESS_PATH_PERL TARGET_NAME BASE_SOURCE BASE_DEST)
-    SET (DEST "${CMAKE_CURRENT_BINARY_DIR}/${BASE_DEST}")
-    SET (SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/${BASE_SOURCE}")
-    PREPROCESS_PATH_PERL_WITH_FULL_NAMES ("${TARGET_NAME}" "${SOURCE}" "${DEST}")
+MACRO(PREPROCESS_PATH_PERL TGT BASE_SOURCE BASE_DEST)
+    PREPROCESS_PATH_PERL_WITH_FULL_NAMES ("${TGT}" "${CMAKE_CURRENT_SOURCE_DIR}/${BASE_SOURCE}" "${CMAKE_CURRENT_BINARY_DIR}/${BASE_DEST}")
 ENDMACRO()
 
 # Copies the file from one place to the other.
@@ -120,17 +118,16 @@ MACRO(RUN_POD2MAN TARGET_DESTS_VARNAME BASE_SOURCE BASE_DEST SECTION CENTER RELE
     ENDIF ()
     # It is null by default.
     SET (POD2MAN_SOURCE_IS_IN_BINARY )
-    SET(PATH_PERL ${PERL_EXECUTABLE})
     ADD_CUSTOM_COMMAND(
         OUTPUT "${DEST}"
-        COMMAND "${PATH_PERL}"
+        COMMAND "${PERL_EXECUTABLE}"
         ARGS "${CMAKE_SOURCE_DIR}/cmake/pod2man-wrapper.pl"
             "--src" "${SOURCE}"
             "--dest" "${DEST}"
             "--section" "${SECTION}"
             "--center" "${CENTER}"
             "--release" "${RELEASE}"
-        DEPENDS ${SOURCE}
+        DEPENDS "${SOURCE}"
         VERBATIM
     )
     # The custom command needs to be assigned to a target.
@@ -320,11 +317,9 @@ ENDMACRO()
 
 MACRO(SHLOMIF_COMMON_SETUP private_mod_path)
     SET (private_mod "Shlomif_Common.cmake")
-    IF (NOT EXISTS "${private_mod_path}/${private_mod}")
-        SHLOMIF_PHYS_COPY_FILE(
-            "/usr/share/cmake/Modules/${private_mod}"
-            "${private_mod_path}/${private_mod}"
-            )
+    SET (_dest "${private_mod_path}/${private_mod}")
+    IF (NOT EXISTS "${_dest}")
+        SHLOMIF_PHYS_COPY_FILE( "/usr/share/cmake/Modules/${private_mod}" "${_dest}")
     ENDIF ()
 ENDMACRO()
 
