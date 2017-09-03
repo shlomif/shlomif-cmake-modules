@@ -98,26 +98,17 @@ MACRO(PREPROCESS_PATH_PERL TARGET_NAME BASE_SOURCE BASE_DEST)
 ENDMACRO()
 
 # Copies the file from one place to the other.
-# TARGET_NAME is the name of the makefile target to add.
+# TGT is the name of the makefile target to add.
 # SOURCE is the source path.
 # DEST is the destination path.
-MACRO(ADD_COPY_TARGET TARGET_NAME SOURCE DEST)
-    SET(PATH_PERL ${PERL_EXECUTABLE})
+MACRO(ADD_COPY_TARGET TGT SOURCE DEST)
     ADD_CUSTOM_COMMAND(
-        OUTPUT ${DEST}
-        COMMAND ${PATH_PERL}
-        ARGS "-e"
-        "my (\$src, \$dest) = @ARGV; use File::Copy; copy(\$src, \$dest);"
-        ${SOURCE}
-        ${DEST}
-        DEPENDS ${SOURCE}
-        VERBATIM
+        OUTPUT "${DEST}"
+        DEPENDS "${SOURCE}"
+        COMMAND "${CMAKE_COMMAND}" "-E" "copy" "${SOURCE}" "${DEST}"
     )
     # The custom command needs to be assigned to a target.
-    ADD_CUSTOM_TARGET(
-        ${TARGET_NAME} ALL
-        DEPENDS ${DEST}
-    )
+    ADD_CUSTOM_TARGET("${TGT}" ALL DEPENDS "${DEST}")
 ENDMACRO()
 
 MACRO(RUN_POD2MAN TARGET_DESTS_VARNAME BASE_SOURCE BASE_DEST SECTION CENTER RELEASE)
