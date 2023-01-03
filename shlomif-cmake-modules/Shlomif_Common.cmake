@@ -224,11 +224,14 @@ MACRO(SHLOMIF_PHYS_COPY_FILE FROM TO)
     FILE (WRITE "${TO}" "${contents}")
 ENDMACRO()
 
+# See: https://github.com/shlomif/shlomif-cmake-modules/issues/1
+SET (SHLOMIF_SYSTEM_INSTALL_DIR "/usr/share/cmake/Modules" CACHE STRING "cmake sys installation dir")
+
 MACRO(SHLOMIF_COMMON_SETUP private_mod_path)
     SET (private_mod "Shlomif_Common.cmake")
     SET (_dest "${private_mod_path}/${private_mod}")
     IF (NOT EXISTS "${_dest}")
-        SHLOMIF_PHYS_COPY_FILE( "/usr/share/cmake/Modules/${private_mod}" "${_dest}")
+        SHLOMIF_PHYS_COPY_FILE( "${SHLOMIF_SYSTEM_INSTALL_DIR}/${private_mod}" "${_dest}")
     ENDIF ()
 ENDMACRO()
 
